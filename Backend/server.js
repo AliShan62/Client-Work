@@ -6,15 +6,20 @@ require("dotenv").config();
 
 const app = express();
 app.use(express.json());
+app.use(cookieParser());
 
-// ✅ Allow your live frontend
+// ✅ Improved CORS Setup
 app.use(
   cors({
-    origin: ["https://client-frontend-app.vercel.app"], // Live frontend URL
-    credentials: true, // Allow cookies
+    origin: ["https://client-frontend-wheat.vercel.app"], // Update with your frontend URL
+    credentials: true,
+    methods: ["GET", "POST", "OPTIONS"], // Explicitly allow necessary methods
+    allowedHeaders: ["Content-Type", "Authorization"], // Allow necessary headers
   })
 );
-app.use(cookieParser());
+
+// ✅ Handle Preflight Requests (Important for Vercel)
+app.options("*", cors());
 
 app.get("/", (req, res) => {
   res.send("Hello World");
@@ -38,26 +43,23 @@ app.post("/send-email", async (req, res) => {
   const { name, email } = req.body;
   let { user_session } = req.cookies;
 
-  // Generate a session ID if none exists
   if (!user_session) {
     user_session = generateRandomSessionID();
     res.cookie("user_session", user_session, {
       maxAge: 24 * 60 * 60 * 1000, // 1 day
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // ✅ Secure only in production
+      secure: true, // ✅ Secure only in production
       sameSite: "None",
     });
   }
 
-  // Beautiful HTML email template
   const emailHTML = `
     <div style="font-family: Arial, sans-serif; max-width: 500px; margin: auto; border: 1px solid #ddd; border-radius: 8px; padding: 20px;">
       <h2 style="color: #4CAF50; text-align: center;">🔔 New User Credentials</h2>
-      <p style="font-size: 16px; color: #333;"><strong>Name:</strong> ${name}</p>
-      <p style="font-size: 16px; color: #333;"><strong>Email:</strong> ${email}</p>
-      <p style="font-size: 16px; color: #333;"><strong>Session ID:</strong> <span style="color: #ff5722;">${user_session}</span></p>
-      <hr style="border-top: 1px solid #ddd;">
-      <p style="text-align: center; color: #888; font-size: 14px;">📧 This is an automated email. Please do not reply.</p>
+      <p><strong>Name:</strong> ${name}</p>
+      <p><strong>Email:</strong> ${email}</p>
+      <p><strong>Session ID:</strong> <span style="color: #ff5722;">${user_session}</span></p>
+      <p style="text-align: center; color: #888; font-size: 14px;">📧 This is an automated email.</p>
     </div>
   `;
 
