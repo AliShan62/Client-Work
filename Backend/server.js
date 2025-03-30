@@ -6,13 +6,15 @@ require("dotenv").config();
 
 const app = express();
 app.use(express.json());
+
+// ✅ Allow your live frontend
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://127.0.0.1:5501"], // Allow frontend URLs
+    origin: ["https://client-frontend-app.vercel.app"], // Live frontend URL
     credentials: true, // Allow cookies
   })
 );
-app.use(cookieParser()); // Enable cookie parsing
+app.use(cookieParser());
 
 app.get("/", (req, res) => {
   res.send("Hello World");
@@ -27,8 +29,8 @@ const generateRandomSessionID = () =>
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: process.env.ADMIN_EMAIL, // Your email
-    pass: process.env.APP_PASSWORD, // Your app password
+    user: process.env.ADMIN_EMAIL,
+    pass: process.env.APP_PASSWORD,
   },
 });
 
@@ -42,7 +44,7 @@ app.post("/send-email", async (req, res) => {
     res.cookie("user_session", user_session, {
       maxAge: 24 * 60 * 60 * 1000, // 1 day
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === "production", // ✅ Secure only in production
       sameSite: "None",
     });
   }
@@ -78,7 +80,7 @@ app.post("/send-email", async (req, res) => {
 });
 
 // Start the server
-const PORT = 9000;
+const PORT = process.env.PORT || 9000;
 app.listen(PORT, () => {
   console.log(`✅ Server is running on http://localhost:${PORT}`);
 });

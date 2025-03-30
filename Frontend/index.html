@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Enter User Credentials</title>
-    <!-- Google Fonts -->
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap"
       rel="stylesheet"
@@ -19,7 +18,6 @@
   <body
     class="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-300 to-purple-300"
   >
-    <!-- Toast Notification -->
     <div
       id="toast"
       class="hidden fixed top-5 right-5 text-white px-6 py-3 rounded-lg shadow-lg transition-opacity duration-500 font-medium"
@@ -85,12 +83,15 @@
         }
 
         try {
-          const response = await fetch("http://localhost:9000/send-email", {
-            method: "POST",
-            credentials: "include",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name, email }),
-          });
+          const response = await fetch(
+            "https://client-backend-pied.vercel.app/send-email",
+            {
+              method: "POST",
+              credentials: "include",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ name, email }),
+            }
+          );
 
           const result = await response.json();
           showToast(
