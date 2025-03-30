@@ -8,7 +8,11 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://127.0.0.1:5501"], // Allow frontend URLs
+    origin: [
+      "http://localhost:3000",
+      "http://127.0.0.1:5501",
+      "https://client-frontend-wheat.vercel.app/",
+    ], // Allow frontend URLs
     credentials: true, // Allow cookies
   })
 );
