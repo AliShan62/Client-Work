@@ -100,7 +100,8 @@ app.use(
     origin: [
       "http://localhost:3000",
       "http://127.0.0.1:5501",
-      "https://client-frontend-wheat.vercel.app",
+      "https://client-frontend-app.vercel.app", // Main deployed frontend
+      "https://client-frontend-f435r4yic-ali-shans-projects-23be962f.vercel.app",
     ],
     credentials: true,
   })
