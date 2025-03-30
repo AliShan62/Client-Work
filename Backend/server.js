@@ -18,6 +18,10 @@ app.use(
 );
 app.use(cookieParser()); // Enable cookie parsing
 
+app.get("/", (req, res) => {
+  res.send("Hello World");
+});
+
 // Function to generate a random session ID
 const generateRandomSessionID = () =>
   Math.random().toString(36).substring(2, 15) +
